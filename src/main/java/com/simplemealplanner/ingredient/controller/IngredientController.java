@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/ingredients")
@@ -29,6 +30,20 @@ public class IngredientController {
     @GetMapping
     Iterable<Ingredient> listIngredients() {
         return ingredients;
+    }
+
+    @GetMapping("/{id}")
+    ResponseEntity<Ingredient> getIngredient(
+            @PathVariable String id
+    ) {
+        if (id == null) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        return ingredients.stream()
+                .filter(x -> id.equals(x.getId()))
+                .findAny()
+                .map(ingredient -> new ResponseEntity<>(ingredient, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
     }
 
     @PostMapping
