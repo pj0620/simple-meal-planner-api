@@ -28,4 +28,7 @@ dependencies {
     implementation 'org.slf4j:slf4j-api:2.0.9'
     // Binding for SLF4J, Logback is the recommended binding for SLF4J
     runtimeOnly 'ch.qos.logback:logback-classic:1.4.7'
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'com.h2database:h2'
 }
