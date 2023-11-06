@@ -4,6 +4,7 @@ import com.simplemealplanner.ingredient.model.CreateUpdateIngredientModel;
 import com.simplemealplanner.ingredient.model.Ingredient;
 import com.simplemealplanner.ingredient.model.IngredientDTO;
 import com.simplemealplanner.ingredient.repository.IngredientRepository;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,22 +20,10 @@ import static com.simplemealplanner.ingredient.mapper.IngredientDBMapper.INGREDI
 
 @RestController
 @RequestMapping("/ingredients")
+@AllArgsConstructor
 @Slf4j
 public class IngredientController {
     private IngredientRepository ingredientRepository;
-    private static int lastId = 4;
-
-    public IngredientController(
-            IngredientRepository ingredientRepository
-    ) {
-        this.ingredientRepository = ingredientRepository;
-        this.ingredientRepository.saveAll(List.of(
-                IngredientDTO.builder().id("1").name("flour").build(),
-                IngredientDTO.builder().id("2").name("sugar").build(),
-                IngredientDTO.builder().id("3").name("butter").build(),
-                IngredientDTO.builder().id("4").name("egg").build()
-        ));
-    }
 
     @GetMapping
     Iterable<Ingredient> listIngredients() {
