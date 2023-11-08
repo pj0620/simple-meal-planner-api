@@ -1,5 +1,6 @@
 package com.simplemealplanner.ingredient.mapper;
 
+import com.simplemealplanner.common.util.IdUtils;
 import com.simplemealplanner.ingredient.model.CreateUpdateIngredientModel;
 import com.simplemealplanner.ingredient.model.Ingredient;
 import lombok.AccessLevel;
@@ -13,6 +14,6 @@ public class CreateUpdateIngredientMapper {
     public static Function<CreateUpdateIngredientModel, Ingredient> CREATE_UPDATE_TO_INGREDIENT = crudModel ->
             Ingredient.builder()
                     .name(crudModel.getName())
-                    .id(UUID.randomUUID().toString())
+                    .id(IdUtils.createId())
                     .build();
 }

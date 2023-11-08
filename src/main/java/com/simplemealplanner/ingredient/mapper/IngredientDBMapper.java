@@ -12,12 +12,11 @@ public class IngredientDBMapper {
     public static Function<IngredientDTO, Ingredient> DTO_TO_INGREDIENT_MAPPER = ingredientDTO ->
             Ingredient.builder()
             .name(ingredientDTO.getName())
-            .id(ingredientDTO.getId())
+            .id(String.valueOf(ingredientDTO.getId()))
             .build();
 
     public static Function<Ingredient, IngredientDTO> INGREDIENT_TO_DTO_MAPPER = ingredient ->
             IngredientDTO.builder()
                     .name(ingredient.getName())
-                    .id(ingredient.getId())
                     .build();
 }
