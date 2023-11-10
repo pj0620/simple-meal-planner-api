@@ -1,57 +1,40 @@
 package com.simplemealplanner.ingredient.controller;
 
+import com.simplemealplanner.common.repository.SMPCrudController;
 import com.simplemealplanner.ingredient.model.CreateUpdateIngredientModel;
 import com.simplemealplanner.ingredient.model.Ingredient;
 import com.simplemealplanner.ingredient.model.IngredientDTO;
 import com.simplemealplanner.ingredient.repository.IngredientRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static com.simplemealplanner.ingredient.mapper.CreateUpdateIngredientMapper.CREATE_UPDATE_TO_INGREDIENT;
-import static com.simplemealplanner.ingredient.mapper.IngredientDBMapper.DTO_TO_INGREDIENT_MAPPER;
-import static com.simplemealplanner.ingredient.mapper.IngredientDBMapper.INGREDIENT_TO_DTO_MAPPER;
 
 @RestController
 @RequestMapping("/ingredients")
 @AllArgsConstructor
 @Slf4j
 public class IngredientController {
+    @Deprecated
     private IngredientRepository ingredientRepository;
-
+    private SMPCrudController<Ingredient, CreateUpdateIngredientModel, IngredientDTO> ingredientCrudRepository;
     @GetMapping
     Iterable<Ingredient> listIngredients() {
-        return StreamSupport.stream(ingredientRepository.findAll().spliterator(), false).map(
-                DTO_TO_INGREDIENT_MAPPER).collect(Collectors.toList());
+        return ingredientCrudRepository.listData();
     }
 
     @GetMapping("/{id}")
     ResponseEntity<Ingredient> getIngredient(
             @PathVariable String id
     ) {
-        if (id == null) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-        return ingredientRepository.findById(id)
-                .map(DTO_TO_INGREDIENT_MAPPER)
-                .map(ingredient -> new ResponseEntity<>(ingredient, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(null, HttpStatus.NOT_FOUND));
+        return ingredientCrudRepository.getData(id);
     }
 
     @PostMapping
     Ingredient createIngredient(
             @RequestBody CreateUpdateIngredientModel newCreateIngredient
     ) {
-        // TODO: add validator
-        Ingredient newIngredient = CREATE_UPDATE_TO_INGREDIENT.apply(newCreateIngredient);
-        IngredientDTO createdIngredient = ingredientRepository.save(INGREDIENT_TO_DTO_MAPPER.apply(newIngredient));
-        return DTO_TO_INGREDIENT_MAPPER.apply(createdIngredient);
+        return ingredientCrudRepository.createData(newCreateIngredient);
     }
 
     @PutMapping("/{id}")
@@ -59,33 +42,13 @@ public class IngredientController {
             @PathVariable String id,
             @RequestBody CreateUpdateIngredientModel updateIngredient
     ) {
-        if (id == null) {
-            // return a 400 Bad Request response
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-
-        Ingredient ingredient = CREATE_UPDATE_TO_INGREDIENT.apply(updateIngredient);
-
-        HttpStatus responseCode;
-        if (ingredientRepository.existsById(id)) {
-            ingredient.setId(id);
-            responseCode = HttpStatus.OK;
-        } else {
-            responseCode = HttpStatus.CREATED;
-        }
-
-        ingredientRepository.save(INGREDIENT_TO_DTO_MAPPER.apply(ingredient));
-        return new ResponseEntity<>(ingredient, responseCode);
+        return ingredientCrudRepository.update(id, updateIngredient);
     }
 
     @DeleteMapping("/{id}")
     ResponseEntity<String> deleteIngredient(
             @PathVariable String id
     ) {
-        if (id == null) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-        }
-        ingredientRepository.deleteById(id);
-        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        return ingredientCrudRepository.delete(id);
     }
 }

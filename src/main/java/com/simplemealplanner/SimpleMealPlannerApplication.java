@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @SpringBootApplication
 @Slf4j
 @ConfigurationPropertiesScan
-public class MyApplication {
+public class SimpleMealPlannerApplication {
 
     @Value("${health-check-message: Hello}")
     private String healthCheckMessage;
@@ -24,7 +24,7 @@ public class MyApplication {
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(MyApplication.class, args);
+        SpringApplication.run(SimpleMealPlannerApplication.class, args);
     }
 
 }
